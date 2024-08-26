@@ -1,1 +1,134 @@
+import random
+import tkinter as tk
 
+class HangmanGame:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.title("Hangman Game")
+
+        # List of words to guess
+        self.words = ["apple", "banana", "cherry", "date", "elderberry", "python", "game", "code", "happy"]
+
+        # Choose a random word from the list
+        self.word_to_guess = random.choice(self.words)
+
+        # Create a list to store the guessed letters
+        self.guessed_letters = ["_"] * len(self.word_to_guess)
+
+        # Create a variable to store the number of lives
+        self.lives = 6
+
+        # Create GUI elements
+        self.word_label = tk.Label(self.root, text=" ".join(self.guessed_letters), font=("Arial", 24))
+        self.word_label.pack()
+
+        self.lives_label = tk.Label(self.root, text=f"Lives: {self.lives}", font=("Arial", 18))
+        self.lives_label.pack()
+
+        self.guess_entry = tk.Entry(self.root, width=20)
+        self.guess_entry.pack()
+
+        self.guess_button = tk.Button(self.root, text="Guess", command=self.check_guess)
+        self.guess_button.pack()
+
+        self.result_label = tk.Label(self.root, text="", font=("Arial", 18))
+        self.result_label.pack()
+
+        self.hangman_label = tk.Label(self.root, text=self.get_hangman_art(self.lives), font=("Arial", 18))
+        self.hangman_label.pack()
+
+    def get_hangman_art(self, lives):
+        hangman_art = {
+            6: """
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+========""",
+            5: """
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+========""",
+            4: """
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+========""",
+            3: """
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+========""",
+            2: """
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+========""",
+            1: """
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+========""",
+            0: """
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+========"""
+        }
+        return hangman_art[lives]
+
+    def check_guess(self):
+        # Get the guessed letter from the entry field
+        letter = self.guess_entry.get()
+
+        # Check if the letter is in the word
+        if letter in self.word_to_guess:
+            # Reveal the correct letter
+            for i in range(len(self.word_to_guess)):
+                if self.word_to_guess[i] == letter:
+                    self.guessed_letters[i] = letter
+            self.word_label.config(text=" ".join(self.guessed_letters))
+        else:
+            # Decrease the number of lives
+            self.lives -= 1
+            self.lives_label.config(text=f"Lives: {self.lives}")
+            self.hangman_label.config(text=self.get_hangman_art(self.lives))
+
+        # Check if the user has won
+        if "_" not in self.guessed_letters:
+            self.result_label.config(text="Congratulations! You won!")
+            self.guess_button.config(state="disabled")
+        elif self.lives == 0:
+            self.result_label.config(text=f"Game over! The word was {self.word_to_guess}")
+            self.guess_button.config(state="disabled")
+
+        # Clear the entry field
+        self.guess_entry.delete(0, tk.END)
+
+    def run(self):
+        self.root.mainloop()
+
+if __name__ == "__main__":
+    game = HangmanGame()
+    game.run()
