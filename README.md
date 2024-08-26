@@ -1,0 +1,1 @@
+Hangman is a word game in which the player has to guess a word that the (in this case the program) system has picked randomly, by guessing the letters in it. Every time they guess a wrong letter, part of a picture of a person being hanged is drawn, and if the picture is completed the person guessing has lost.
